@@ -1,5 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  // プロジェクト名は Cloudflare Pages のプロジェクト名に合わせてください
   "name": "hibp-checker-pages-secure",
   "compatibility_date": "2026-04-18",
   "pages_build_output_dir": ".",
@@ -7,17 +8,62 @@
     "enabled": true,
     "head_sampling_rate": 1
   },
+
+  // ── KV Namespace ──────────────────────────────────────────────────────────
+  // Cloudflare ダッシュボード → Workers & Pages → KV → Create a namespace
+  // binding 名は必ず "TOKENS" にする (コードが context.env.TOKENS で参照)
   "kv_namespaces": [
     {
       "binding": "TOKENS",
       "id": "REPLACE_WITH_KV_NAMESPACE_ID"
     }
   ],
+
+  // ── D1 Database ───────────────────────────────────────────────────────────
+  // Cloudflare ダッシュボード → Workers & Pages → D1 → Create database
+  // binding 名は必ず "DB" にする (コードが context.env.DB で参照)
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "hibp_checker",
       "database_id": "REPLACE_WITH_D1_DATABASE_ID"
     }
-  ]
+  ],
+
+  // ── Variables and Secrets (wrangler dev 用のローカル値) ──────────────────
+  // 本番の秘密値は Cloudflare Pages ダッシュボードの
+  // Settings → Environment variables → Add variable (Encrypt ON) で設定する
+  // ここに書いた値はローカル開発専用。GitHub に push しても構わない仮の値を書く
+  "vars": {
+    // ▼ 必須: アプリの公開 URL (末尾スラッシュなし)
+    "APP_BASE_URL": "https://your-project.pages.dev",
+
+    // ▼ 必須: Resend で verified 済みドメインの送信元アドレス
+    //         形式: "表示名 <address@verified-domain.example>"
+    "FROM_EMAIL": "HIBP Checker <noreply@mail.example.com>",
+
+    // ▼ 必須: Cloudflare Turnstile の Site Key (公開値・暗号化不要)
+    "TURNSTILE_SITE_KEY": "REPLACE_WITH_TURNSTILE_SITE_KEY",
+
+    // ▼ 任意: User-Agent ヘッダー
+    "APP_USER_AGENT": "hibp-checker-pages/1.0",
+
+    // ▼ 任意: 確認トークンの有効期間 (秒) デフォルト 900
+    "CONFIRM_TOKEN_TTL_SECONDS": "900",
+
+    // ▼ 任意: 確認メール送信後のクールダウン (秒) デフォルト 300
+    "EMAIL_COOLDOWN_SECONDS": "300",
+
+    // ▼ 任意: IP ごとの 10 分あたりリクエスト上限 デフォルト 5
+    "MAX_REQUESTS_PER_10_MIN_IP": "5",
+
+    // ▼ 任意: メールごとの 15 分あたりリクエスト上限 デフォルト 3
+    "MAX_REQUESTS_PER_15_MIN_EMAIL": "3"
+  }
+
+  // ── 本番環境のみで使う秘密情報は wrangler.jsonc に書かない ───────────────
+  // 以下は Cloudflare Pages ダッシュボードで「Encrypt」を ON にして登録する:
+  //   RESEND_API_KEY        → Resend API キー (re_xxxxxxxxxxxxxxxx)
+  //   HIBP_API_KEY          → Have I Been Pwned API キー
+  //   TURNSTILE_SECRET_KEY  → Cloudflare Turnstile Secret Key
 }
