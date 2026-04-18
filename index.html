@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>メールアドレス漏えいチェッカー by HIBP</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+  </head>
+  <body>
+    <main class="container">
+      <section class="card hero">
+        <span class="eyebrow">Cloudflare Pages Functions + KV + D1 + Turnstile + Resend</span>
+        <h1>メールアドレス漏えいチェッカー by HIBP</h1>
+        <p class="lead">
+          メールアドレスを入力すると、まず確認メールを送信します。確認リンクを開いたあとにだけ、
+          HIBP 照会と結果メール送信を実行する安全設計のテスト版です。
+        </p>
+        <ul class="feature-list">
+          <li>確認メールフロー</li>
+          <li>レート制限</li>
+          <li>Turnstile CAPTCHA</li>
+          <li>KV トークン保存</li>
+          <li>Resend の再送防止</li>
+          <li>D1 監査ログ</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <form id="request-form" class="stack">
+          <label>
+            <span>メールアドレス</span>
+            <input id="email" type="email" inputmode="email" placeholder="you@example.com" required />
+          </label>
+
+          <div>
+            <span class="label-inline">人間確認</span>
+            <div id="turnstile-slot" class="turnstile-box"></div>
+          </div>
+
+          <button id="submit-button" type="submit">確認メールを送信</button>
+        </form>
+
+        <div id="status" class="status hidden"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/assets/app.js"></script>
+  </body>
+</html>

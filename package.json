@@ -1,0 +1,13 @@
+{
+  "name": "cloudflare-pages-hibp-secure",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev .",
+    "deploy": "wrangler pages deploy ."
+  },
+  "devDependencies": {
+    "wrangler": "^4.12.0"
+  }
+}
