@@ -13,6 +13,12 @@
   --warn-line: rgba(250, 204, 21, 0.45);
   --error-bg: rgba(248, 113, 113, 0.12);
   --error-line: rgba(248, 113, 113, 0.45);
+  --danger: #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.10);
+  --danger-line: rgba(248, 113, 113, 0.40);
+  --safe: #34d399;
+  --safe-bg: rgba(52, 211, 153, 0.10);
+  --safe-line: rgba(52, 211, 153, 0.40);
 }
 
 * { box-sizing: border-box; }
@@ -40,6 +46,8 @@ body {
   padding: 24px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 }
+
+.hidden { display: none !important; }
 
 .hero { padding-top: 28px; }
 .eyebrow {
@@ -88,11 +96,7 @@ button {
   cursor: pointer;
 }
 button:disabled { opacity: .65; cursor: wait; }
-.turnstile-box {
-  min-height: 68px;
-  display: flex;
-  align-items: center;
-}
+
 .status {
   padding: 14px 16px;
   border-radius: 12px;
@@ -110,3 +114,150 @@ code {
   padding: 2px 6px;
   border-radius: 6px;
 }
+
+/* =====================================================
+   結果カード
+   ===================================================== */
+.result-card {
+  padding: 28px 24px;
+}
+
+/* アイコン */
+.result-icon {
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.result-icon.danger { filter: drop-shadow(0 0 12px rgba(248,113,113,.6)); }
+.result-icon.safe   { color: var(--safe); filter: drop-shadow(0 0 12px rgba(52,211,153,.5)); font-size: 48px; }
+
+/* タイトル */
+.result-title {
+  text-align: center;
+  font-size: clamp(24px, 4vw, 36px);
+  margin: 0 0 10px;
+}
+.result-title.danger { color: var(--danger); }
+.result-title.safe   { color: var(--safe); }
+
+/* サブタイトル（〇〇 は N 件…） */
+.result-subtitle {
+  text-align: center;
+  color: var(--muted);
+  margin: 0 0 16px;
+  font-size: 15px;
+}
+.breach-count-highlight {
+  color: var(--danger);
+  font-weight: 800;
+  font-size: 1.15em;
+}
+
+/* バナー */
+.result-banner {
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  border-left: 4px solid;
+}
+.danger-banner {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: #fca5a5;
+}
+.safe-banner {
+  background: var(--safe-bg);
+  border-color: var(--safe);
+  color: #6ee7b7;
+}
+
+/* 漏えいカードリスト */
+#breach-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+/* 個別の漏えいカード */
+.breach-card {
+  background: rgba(10, 15, 35, 0.60);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.breach-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.breach-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.breach-domain {
+  font-size: 12px;
+  color: var(--muted);
+  background: rgba(40, 50, 80, 0.70);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 2px 10px;
+}
+
+.breach-meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.breach-meta-item {
+  font-size: 13px;
+  color: var(--muted);
+}
+.breach-meta-item strong {
+  color: var(--text);
+}
+
+/* データ種別タグ */
+.breach-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.breach-tag {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--danger-line);
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-weight: 500;
+}
+
+/* フッターボタン */
+.result-footer {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.btn-check-another {
+  display: inline-block;
+  background: linear-gradient(135deg, #3b82f6, #6d5efc);
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 36px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: opacity .15s;
+}
+.btn-check-another:hover { opacity: .85; }
