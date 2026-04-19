@@ -8,7 +8,8 @@
   </head>
   <body>
     <main class="container narrow">
-      <section class="card">
+      <!-- 処理中カード -->
+      <section class="card" id="loading-card">
         <span class="eyebrow">確認メールフロー</span>
         <h1>確認を完了してください</h1>
         <p class="lead">
@@ -17,6 +18,19 @@
         <div class="stack">
           <button id="confirm-button" type="button">確認して結果メールを送信</button>
           <div id="status" class="status hidden"></div>
+        </div>
+      </section>
+
+      <!-- 漏えい結果カード（JS で生成して表示） -->
+      <section class="card result-card hidden" id="result-card">
+        <div class="result-header" id="result-header">
+          <!-- JS で生成 -->
+        </div>
+        <div id="breach-list">
+          <!-- JS で生成 -->
+        </div>
+        <div class="result-footer hidden" id="result-footer">
+          <a href="/" class="btn-check-another">別のアドレスをチェック</a>
         </div>
       </section>
     </main>

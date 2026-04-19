@@ -100,7 +100,8 @@ export async function onRequestPost(context) {
       title: b.Title,
       domain: b.Domain,
       breachedDate: b.BreachDate,
-      pwnCount: b.PwnCount
+      pwnCount: b.PwnCount,
+      dataClasses: b.DataClasses || []
     }));
 
     const summary = {
@@ -115,7 +116,10 @@ export async function onRequestPost(context) {
       : '該当なし';
 
     const htmlList = topBreaches.length
-      ? topBreaches.map((b) => `<li><strong>${escapeHtml(b.title || b.name)}</strong> / ${escapeHtml(b.breachedDate || '日付不明')} / ${Number(b.pwnCount || 0).toLocaleString()}件</li>`).join('')
+      ? topBreaches.map((b) => {
+          const tags = (b.dataClasses || []).map((t) => `<span style="display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid #f87171;color:#f87171;margin:2px">${escapeHtml(t)}</span>`).join('');
+          return `<li style="margin-bottom:12px"><strong>${escapeHtml(b.title || b.name)}</strong>${b.domain ? ` (${escapeHtml(b.domain)})` : ''}<br>漏えい日: ${escapeHtml(b.breachedDate || '不明')} / 影響件数: ${Number(b.pwnCount || 0).toLocaleString()}件<br>${tags}</li>`;
+        }).join('')
       : '<li>該当なし</li>';
 
     const subject = hibp.found
