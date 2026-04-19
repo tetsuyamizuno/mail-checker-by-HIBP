@@ -1,5 +1,5 @@
 import { auditLog, countRecentAcceptedRequests } from '../_lib/db.js';
-import { sendResendEmail, verifyTurnstile } from '../_lib/services.js';
+import { sendResendEmail } from '../_lib/services.js';
 import {
   getBaseUrl,
   getClientIp,
@@ -25,7 +25,6 @@ export async function onRequestPost(context) {
       'DB',
       'TOKENS',
       'APP_BASE_URL',
-      'TURNSTILE_SECRET_KEY',
       'RESEND_API_KEY',
       'FROM_EMAIL',
       'HIBP_API_KEY'
@@ -33,7 +32,6 @@ export async function onRequestPost(context) {
 
     const body = await readJson(request);
     const email = String(body?.email || '').trim().toLowerCase();
-    const turnstileToken = String(body?.turnstileToken || '');
 
     const emailHash = await sha256Hex(email);
     const emailMasked = maskEmail(email);
@@ -59,34 +57,6 @@ export async function onRequestPost(context) {
         message: 'Invalid email format'
       });
       return json({ error: 'メールアドレスの形式が正しくありません。' }, 400);
-    }
-
-    if (!turnstileToken) {
-      await auditLog(env, {
-        requestId,
-        eventType: 'request.rejected',
-        emailHash,
-        emailMasked,
-        ipHash,
-        status: 'missing_turnstile',
-        message: 'Turnstile token is missing'
-      });
-      return json({ error: 'CAPTCHA の確認が必要です。' }, 400);
-    }
-
-    const turnstile = await verifyTurnstile(env, { token: turnstileToken, remoteip: ip });
-    if (!turnstile.success) {
-      await auditLog(env, {
-        requestId,
-        eventType: 'request.rejected',
-        emailHash,
-        emailMasked,
-        ipHash,
-        status: 'turnstile_failed',
-        message: 'Turnstile verification failed',
-        meta: { errorCodes: turnstile['error-codes'] || [] }
-      });
-      return json({ error: 'CAPTCHA の検証に失敗しました。再度お試しください。' }, 403);
     }
 
     const counts = await countRecentAcceptedRequests(env, {
@@ -141,7 +111,7 @@ export async function onRequestPost(context) {
       emailMasked,
       ipHash,
       status: 'ok',
-      message: 'Accepted after Turnstile and rate-limit checks'
+      message: 'Accepted after rate-limit checks'
     });
 
     const subject = '【要確認】メールアドレス漏えいチェックの確認リンク';

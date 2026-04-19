@@ -2,8 +2,7 @@ export async function onRequestGet(context) {
   const { env } = context;
   return new Response(
     JSON.stringify({
-      appName: 'メールアドレス漏えいチェッカー by HIBP',
-      turnstileSiteKey: env.TURNSTILE_SITE_KEY || ''
+      appName: 'メールアドレス漏えいチェッカー by HIBP'
     }),
     {
       headers: {
